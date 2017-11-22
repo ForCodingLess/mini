@@ -1,10 +1,11 @@
 var path=require("path");
 var webpack=require('webpack');
+
 module.exports={
 	entry:{index:'./lib/js/index.jsx'},
 	output:{
-		path:path.resolve(__dirname,"live"),
-		publicPath:"lib/js",
+		path:path.resolve(__dirname,"public/js/"),
+		publicPath:"public/js/",
 		filename:"[name].js"
 	},
 	module:{

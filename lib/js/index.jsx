@@ -1,6 +1,6 @@
-var React=require("react");
-var ReactDOM=require("react-dom");
-var phraser=require("phraser");
+import React from "react";
+import ReactDOM from "react-dom";
+import Phaser from '../../node_modules/phaser/build/phaser.min.js';
 
 class GameContructor extends React.Component{
 	constructor(props){
@@ -9,12 +9,22 @@ class GameContructor extends React.Component{
 		this.state={
 
 		}
+
+		this.game=null
+	}
+
+	componentWillMount(){
+
+	}
+
+	componentDidMount(){
+		this.game=new Phaser.Game(400,400,Phaser.AUTO,'phaser')
 	}
 
 	render(){
 		return(
 			<div>
-				<p>仰天大笑出门去</p>
+				<div id="phaser"></div>
 			</div>
 		)
 	}
