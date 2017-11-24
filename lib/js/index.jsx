@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Phaser from '../../node_modules/phaser/build/phaser.min.js';
+import '../style/index.scss';
 
 class GameContructor extends React.Component{
 	constructor(props){
@@ -18,7 +18,7 @@ class GameContructor extends React.Component{
 	}
 
 	componentDidMount(){
-		this.game=new Phaser.Game(400,400,Phaser.AUTO,'phaser')
+		this.game=new Phaser.Game("100","100",Phaser.AUTO,document.getElementById("phaser"))
 	}
 
 	render(){

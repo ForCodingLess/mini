@@ -1,5 +1,7 @@
 var path=require("path");
 var webpack=require('webpack');
+var ExtractTextPlugin=require('extract-text-webpack-plugin');
+var extractCss=new ExtractTextPlugin('../style/[name].css');
 
 module.exports={
 	entry:{index:'./lib/js/index.jsx'},
@@ -18,6 +20,10 @@ module.exports={
 						presets:['es2015','react']
 					}
 				}]
+			},
+			{
+				test:/\.scss$/,
+				loader:extractCss.extract(['css-loader','sass-loader'])
 			}
 		]
 	},
@@ -26,8 +32,8 @@ module.exports={
 		poll:1000
 	},
 	devServer: {
+		contentBase:'./',
 	    historyApiFallback: true,
-	    hot: true,
 	    inline: true,
 	    progress: true
   	},
@@ -36,6 +42,7 @@ module.exports={
 			'process.env.NODE.ENV':"development"
 		}),
 		new webpack.HotModuleReplacementPlugin(),
-		new webpack.optimize.CommonsChunkPlugin('main')
+		new webpack.optimize.CommonsChunkPlugin('main'),
+		extractCss
 	]
 }
