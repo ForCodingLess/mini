@@ -5,7 +5,7 @@ var http=require("http").Server(app);
 var uuid=require("uuid/v4");
 var bodyParser=require("body-parser");
 
-app.use('/public',express.static(path.join(__dirname,'public')));
+app.use('/public',express.static('public'));
 
 // app.set('views',path.join(__dirname,'public'));
 

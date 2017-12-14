@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import '../style/index.scss';
 
-class GameContructor extends React.Component{
+class Main extends React.Component{
 	constructor(props){
 		super(props)
 
@@ -10,7 +10,6 @@ class GameContructor extends React.Component{
 
 		}
 
-		this.game=null
 	}
 
 	componentWillMount(){
@@ -18,13 +17,13 @@ class GameContructor extends React.Component{
 	}
 
 	componentDidMount(){
-		this.game=new Phaser.Game("100","100",Phaser.AUTO,document.getElementById("phaser"))
+		
 	}
 
 	render(){
 		return(
 			<div>
-				<div id="phaser"></div>
+				
 			</div>
 		)
 	}
@@ -32,6 +31,6 @@ class GameContructor extends React.Component{
 
 
 ReactDOM.render(
-	<GameContructor/>,
+	<Main/>,
 	document.getElementById("container")
 )

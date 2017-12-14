@@ -1,14 +1,14 @@
 var path=require("path");
 var webpack=require('webpack');
 var ExtractTextPlugin=require('extract-text-webpack-plugin');
-var extractCss=new ExtractTextPlugin('../style/[name].css');
+var extractCss=new ExtractTextPlugin('style/[name].css');
 
 module.exports={
 	entry:{index:'./lib/js/index.jsx'},
 	output:{
-		path:path.resolve(__dirname,"public/js/"),
-		publicPath:"public/js/",
-		filename:"[name].js"
+		path:path.resolve(__dirname,"public/"),
+		publicPath:"public/",
+		filename:"js/[name].js"
 	},
 	module:{
 		rules:[
