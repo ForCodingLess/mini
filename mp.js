@@ -44,13 +44,7 @@ mp.receiveText=function(req,res){
 			let time=new Date().getTime();
 			mysql.query("select * from wx_mp_whitelist where openid='"+openid+"'",(rst)=>{
 				if(rst.length===1){
-					let friendly=`<xml>
-									<ToUserName>< ![CDATA[${openid}] ]></ToUserName>
-									<FromUserName>< ![CDATA[${ownerid}] ]></FromUserName>
-									<CreateTime>${time}</CreateTime>
-									<MsgType>< ![CDATA[text] ]></MsgType>
-									<Content>< ![CDATA[你好] ]></Content>
-								</xml>`;
+					
 				}
 			})
 		}

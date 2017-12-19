@@ -5,9 +5,9 @@ var config=require("config");
 var db={};
 
 db.query=function(sqlcmd,callback){
-	var connection=mysql.createConnection({
-		config.get("Default.dbConfig");
-	});
+	var connection=mysql.createConnection(
+		config.get("Default.dbConfig")
+	);
 
 	connection.connect((err)=>{
 		if(err){
