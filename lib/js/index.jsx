@@ -90,7 +90,7 @@ class Main extends React.Component{
 		let id="123123"
 		let openid=~~(Math.random()*10000).toString()
 		let headimg="https://shp.qpic.cn/bizmp/CQ3lYf0saco7sJYbFrn3jvMxDJHjqZqiaqtGMtMNSqnW6DwcRD6qwGA/"
-		let nickname="做梦"
+		let nickname="做梦吧"
 		this.setState({
 			id:id,
 			openid:openid,
