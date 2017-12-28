@@ -19,14 +19,27 @@ class Main extends React.Component{
 		this.pushMsgQueue=this.pushMsgQueue.bind(this)
 
 		this.preload=this.preload.bind(this)
-		this.create=this.create.bind(this)
-		this.update=this.update.bind(this)
+
 	}
 
 	preload(){
-		this.game.load.image('tree1','')
+		this.game.stage.backgroundColor="#ffffff"
+		this.game.load.image('1','./img/tree1.png')
+		this.game.load.image('2','./img/tree2.png')
+		this.game.load.image('3','./img/tree3.png')
+		this.game.load.image('4','./img/flower.png')
+
+		this.game.state.add('create',this.create)
+		this.game.state.add('update',this.update)
 	}
-	create(){}
+	create(){
+		this.game.World.resize(1830,1230)
+		for(let p in this.maze){
+			for(let q in this.maze[p]){
+				this.game.add.sprite(p*30,q*30,30,30,'1')
+			}
+		}
+	}
 	update(){}
 
 	init(id,openid,nickname,headimg){
@@ -79,9 +92,12 @@ class Main extends React.Component{
 	        this.maze.come(obj.operation.position.x, obj.operation.position.y)
 	        break
 	      case 200:
-	        this.maze = new Extra.Maze(obj.maze, obj.location, obj.other, 30, 'game')
-	        this.touch = new Extra.Touch(100, 100)
-	        this.pushMsgQueue()
+	      	console.log(obj.maze)
+	      	this.maze=obj.maze
+	      	this.game.state.start('create')
+	        // this.maze = new Extra.Maze(obj.maze, obj.location, obj.other, 30, 'game')
+	        // this.touch = new Extra.Touch(100, 100)
+	        // this.pushMsgQueue()
 	        break
 	      case 403:
 	        console.log(obj.msg)
@@ -103,7 +119,7 @@ class Main extends React.Component{
 		},()=>{
 			this.init(id,openid,nickname,headimg)
 		})
-		this.game=new Phaser.Game(375,667,Phaser.AUTO,'game',{preload:this.preload,create:this.create,update:this.update})
+		this.game=new Phaser.Game(345,667,Phaser.AUTO,'game',{preload:this.preload})
 	}
 
 	render(){

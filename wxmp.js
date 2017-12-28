@@ -6,8 +6,8 @@ var uuid=require("uuid/v4");
 var bodyParser=require("body-parser");
 
 
-var mysql=require('./db.js');
-var mp=require('./mp.js');
+// var mysql=require('./db.js');
+// var mp=require('./mp.js');
 
 
 app.use('/mp',express.static(path.join(__dirname,'public')));
@@ -25,9 +25,9 @@ app.get('/mp/',(req,res)=>{
 	res.send('hello mp');
 })
 
-app.get('/mp/check',(req,res)=>{
-	mp.checkSignature(req,res);
-})
+// app.get('/mp/check',(req,res)=>{
+// 	mp.checkSignature(req,res);
+// })
 
 app.post('/mp/check',(req,res)=>{
 	

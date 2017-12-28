@@ -4,7 +4,7 @@ var ExtractTextPlugin=require('extract-text-webpack-plugin');
 var extractCss=new ExtractTextPlugin('style/[name].css');
 
 module.exports={
-	entry:{index:'./lib/js/index.jsx'},
+	entry:{bundle:'./public/js/game.js'},
 	output:{
 		path:path.resolve(__dirname,"public/"),
 		publicPath:"public/",
@@ -18,6 +18,15 @@ module.exports={
 					loader:'babel-loader',
 					query:{
 						presets:['es2015','react']
+					}
+				}]
+			},
+			{
+				test:/\.js$/,
+				use:[{
+					loader:'babel-loader',
+					query:{
+						presets:['es2015']
 					}
 				}]
 			},
