@@ -41,43 +41,45 @@
 	}
 
 	class Tree extends Phaser.Sprite{
-		constructor(game,x,y,width=30,height=30){
+		constructor(game,x,y,width=40,height=40){
 			super(game);
 			let key=game.rnd.between(1,4);
 			Phaser.Sprite.call(this,game,x,y,key);
 			this.width=width;
 			this.height=height;
-			game.physics.p2.enable(this);
-			this.body.immovable=false;
+			this.inputEnabled=false;
+			game.physics.arcade.enable(this);
+			this.body.collideWorldBounds=true;
+			this.body.immovable=true;
 		}
 	}
 
 	class Player extends Phaser.Sprite{
-		constructor(game,x,y,key,width=30,height=30){
+		constructor(game,x,y,key,width=25,height=25){
 			super(game);
-			game.add.sprite(x,y,key);
+			Phaser.Sprite.call(this,game,x,y,key);
 			this.width=width;
 			this.height=height;
-			game.physics.p2.enable(this,false);
-			this.body.immovable=true;
+			game.physics.arcade.enable(this);
+			this.smoothed=true;
+			this.body.collideWorldBounds=true;
+			game.world.add(this);
 		}
 	}
 
 	var maze=[];
 	var data1={},data2={};
 	var handler=null;
-	var trees;
 	var player1;
 	var player2;
-	var cursors;
 
 	class MazeGame{
 		constructor(){
-			this.game=new Phaser.Game(1830,1230,Phaser.Auto,'container');
+			this.game=new Phaser.Game(375,620,Phaser.CANVAS,'container');
 			this.game.state.add('preload',this.preload);
 			this.game.state.add('create',this.create);
 			this.game.state.add('play',this.play);
-			this.game.state.add('render',this.render);
+			this.game.state.add('over',this.over);
 
 			let id="123123";
 			let openid=~~(Math.random()*10000).toString();
@@ -113,55 +115,83 @@
 		}
 		create(){
 			this.create=()=>{
-				this.game.physics.startSystem(Phaser.Physics.P2JS);
-				this.game.physics.p2.setImpactEvents(true);
+				this.game.world.setBounds(0,0,1640,1230);
+				this.game.physics.startSystem(Phaser.Physics.ARCADE);
 				this.game.state.start('play');
 			}
 		}
 		play(){
+			var trees;
+			var timer;
 			this.create=()=>{
 				trees=this.game.add.group();
+				trees.ignoreChildInput=true;
 				for(let p in maze){
 					for(let q in maze[p]){
 						if(maze[p][q]===0){
-							trees.add(new Tree(this.game,p*30,q*30));
+							trees.add(new Tree(this.game,p*40,q*40));
 						}
 					}
 				}
-				player1=new Player(this.game,data1.x*30,data1.y*30,'p1');
-				player2=new Player(this.game,data2.x*30,data2.y*30,'p2');
-				player1.body.setCollisionGroup(trees);
-				player1.body.collides(trees, function(){
-					console.log(1);
-				}, this);
-				cursors=this.game.input.keyboard.createCursorKeys();
+				player1=new Player(this.game,data1.x*40+7,data1.y*40+7,'p1');
+				player2=new Player(this.game,data2.x*40+7,data2.y*40+7,'p2');
+				
+				this.game.camera.follow(player1);
 
+				var position={};
+				var touch=false;
+				this.game.input.maxPointers=1;
+				this.game.input.onDown.add(function(pointer,e){
+					touch=true;
+					Object.assign(position,{x:pointer.clientX,y:pointer.clientY});
+				})
+				this.game.input.onUp.add(function(pointer,e){
+					touch=false;
+					position={};
+					player1.body.velocity.x=0;
+					player1.body.velocity.y=0;
+				})
+				this.game.input.addMoveCallback(function(pointer,x,y,isTap){
+					console.log(this.game.world.width)
+					this.game.debug.pointer(this.game.input.pointer1)
+					if(!isTap&&touch){
+						if(x>position.x){
+							player1.body.velocity.x=300;
+						}else{
+							player1.body.velocity.x=-300;
+						}
+						if(y>position.y){
+							player1.body.velocity.y=300;
+						}else{
+							player1.body.velocity.y=-300;
+						}
+					}
+				},this.game.input.pointer1);
+
+				timer=setInterval(()=>{
+					if(touch){
+						handler.send({
+							x:this.game.world.width-player1.position.x-player1.width,
+							y:this.game.world.height-player1.position.y-player1.height
+						});
+					}
+				},100);
 			},
 			this.update=()=>{
-				// this.game.physics.p2.collide(player1,trees,function(){
-				// 	return;
-				// },null,this);
-				if (cursors.left.isDown)
-			    {
-			        player1.body.moveLeft(5);
-			    }
-			    else if (cursors.right.isDown)
-			    {
-			        player1.body.moveRight(5);
-			    }
-
-			    if (cursors.up.isDown)
-			    {
-			        player1.body.moveUp(5);
-			    }
-			    else if (cursors.down.isDown)
-			    {
-			        player1.body.moveDown(5);
-			    }
+				this.game.physics.arcade.collide(player1,trees);
+				this.game.physics.arcade.overlap(player1,player2,function(){
+					clearInterval(timer);
+					this.game.state.start('over',true,false);
+				},null,this);
 			}
 		}
-		render(){
-
+		render(x,y){
+			this.game.add.tween(player2).to({x:x,y:y},0,Phaser.Easing.Linear.None,true,0,0);
+		}
+		over(){
+			this.create=()=>{
+				
+			}
 		}
 
 		receive(res){
@@ -173,7 +203,8 @@
 		      case 1: console.log(obj.user.nickname + "加入了游戏");
 		        break;
 		      case 0:
-		        console.log(obj.operation.nickname + "移動至x:" + obj.operation.position.x + ",y:" + obj.operation.position.y);
+		      	this.render(obj.operation.pos.x,obj.operation.pos.y);
+		        console.log(obj.operation.nickname + "移動至x:" + obj.operation.pos.x + ",y:" + obj.operation.pos.y);
 		        break;
 		      case 200:
 		      	maze=obj.maze;
