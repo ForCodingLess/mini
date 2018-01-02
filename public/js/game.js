@@ -67,6 +67,46 @@
 		}
 	}
 
+	class Control extends Phaser.Sprite{
+		constructor(game,x,y,key1,key2,width1=70,height1=70,width2=25,height2=25,rad=35){
+			super(game);
+			Phaser.Sprite.call(this,game,x,y,key1);
+			this.width=width1;
+			this.height=height1;
+			this.smoothed=true;
+			game.world.add(this);
+
+			this.child=new Phaser.Sprite(game,x,y,key2);
+			this.child.width=width2;
+			this.child.height=height2;
+			this.child.smoothed=true;
+			this.child.visible=false;
+			game.world.add(this.child);
+		}
+
+		move(x,y){
+			let _x=this.position.x;
+			let _y=this.position.y;
+			let _distance=Phaser.Math.distance(_x,_y,x,y);
+			let _percent=Phaser.Math.percent(this.width1/2,_distance);
+			let _desX=_x+(x-_x)*_percent;
+			let _desY=_y+(y-_y)*_percent;
+			this.game.add.tween(this.child).to({x:_desX,y:_desY},0,Phaser.Easing.Linear.None,true,0,0);
+		}
+
+		tap(x,y){
+			this.position.x=x;
+			this.position.y=y;
+			this.child.position.x=x;
+			this.child.position.y=y;
+			this.child.visible=true;
+		}
+
+		cancel(){
+			this.child.visible=false;
+		}
+	}
+
 	var maze=[];
 	var data1={},data2={};
 	var handler=null;
@@ -95,6 +135,8 @@
 					this.receive(data)
 				}
 			});
+
+			this.game.state.start('preload');
 		}
 		preload(){
 			this.preload=()=>{
@@ -123,6 +165,7 @@
 		play(){
 			var trees;
 			var timer;
+			var controller;
 			this.create=()=>{
 				trees=this.game.add.group();
 				trees.ignoreChildInput=true;
@@ -140,19 +183,23 @@
 
 				var position={};
 				var touch=false;
+				controller=new Control(this.game,60,60,'1','2');
+				console.log(controller)
 				this.game.input.maxPointers=1;
 				this.game.input.onDown.add(function(pointer,e){
 					touch=true;
 					Object.assign(position,{x:pointer.clientX,y:pointer.clientY});
+					controller.tap(pointer.clientX,pointer.clientY);
+					console.log(1)
 				})
 				this.game.input.onUp.add(function(pointer,e){
 					touch=false;
 					position={};
 					player1.body.velocity.x=0;
 					player1.body.velocity.y=0;
+					controller.cancel();
 				})
 				this.game.input.addMoveCallback(function(pointer,x,y,isTap){
-					console.log(this.game.world.width)
 					this.game.debug.pointer(this.game.input.pointer1)
 					if(!isTap&&touch){
 						if(x>position.x){
@@ -165,6 +212,7 @@
 						}else{
 							player1.body.velocity.y=-300;
 						}
+						controller.move(x,y);
 					}
 				},this.game.input.pointer1);
 
@@ -186,7 +234,7 @@
 			}
 		}
 		render(x,y){
-			this.game.add.tween(player2).to({x:x,y:y},0,Phaser.Easing.Linear.None,true,0,0);
+			this.game.add.tween(player2).to({x:x,y:y},50,Phaser.Easing.Linear.None,true,0,0);
 		}
 		over(){
 			this.create=()=>{
