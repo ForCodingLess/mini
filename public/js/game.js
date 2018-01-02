@@ -72,6 +72,7 @@
 			super(game);
 			Phaser.Sprite.call(this,game,x,y,key1);
 			this.width=width1;
+			this.anchor.setTo(0.5,0.5);
 			this.height=height1;
 			this.smoothed=true;
 			game.world.add(this);
@@ -79,6 +80,7 @@
 			this.child=new Phaser.Sprite(game,x,y,key2);
 			this.child.width=width2;
 			this.child.height=height2;
+			this.anchor.setTo(0.5,0.5);
 			this.child.smoothed=true;
 			this.child.visible=false;
 			game.world.add(this.child);
@@ -95,11 +97,14 @@
 		}
 
 		tap(x,y){
-			this.position.x=x;
-			this.position.y=y;
-			this.child.position.x=x;
-			this.child.position.y=y;
+			this.alignIn(this.game.camera.view,Phaser.BOTTOM_LEFT);
+			this.child.alignIn(this.game.camera.view,Phaser.BOTTOM_LEFT);
+			// this.worldPosition.x=x;
+			// this.worldPosition.y=y;
+			// this.child.worldPosition.x=x;
+			// this.child.worldPosition.y=y;
 			this.child.visible=true;
+			console.log(this)
 		}
 
 		cancel(){
@@ -166,6 +171,7 @@
 			var trees;
 			var timer;
 			var controller;
+			var groups;
 			this.create=()=>{
 				trees=this.game.add.group();
 				trees.ignoreChildInput=true;
@@ -176,21 +182,20 @@
 						}
 					}
 				}
+
 				player1=new Player(this.game,data1.x*40+7,data1.y*40+7,'p1');
 				player2=new Player(this.game,data2.x*40+7,data2.y*40+7,'p2');
 				
-				this.game.camera.follow(player1);
-
 				var position={};
 				var touch=false;
 				controller=new Control(this.game,60,60,'1','2');
-				console.log(controller)
+
+				this.game.camera.follow(player1);
 				this.game.input.maxPointers=1;
 				this.game.input.onDown.add(function(pointer,e){
 					touch=true;
 					Object.assign(position,{x:pointer.clientX,y:pointer.clientY});
 					controller.tap(pointer.clientX,pointer.clientY);
-					console.log(1)
 				})
 				this.game.input.onUp.add(function(pointer,e){
 					touch=false;
