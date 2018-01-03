@@ -67,44 +67,45 @@
 		}
 	}
 
-	class Control extends Phaser.Sprite{
-		constructor(game,x,y,key1,key2,width1=70,height1=70,width2=25,height2=25,rad=35){
+	class Control extends Phaser.Button{
+		constructor(game,x,y,key1,key2,width1=70,height1=70,width2=110,height2=110,rad=35){
 			super(game);
-			Phaser.Sprite.call(this,game,x,y,key1);
+			Phaser.Button.call(this,game,x,y,key1,null,this);
 			this.width=width1;
 			this.anchor.setTo(0.5,0.5);
+			this.fixedToCamera=true;
 			this.height=height1;
 			this.smoothed=true;
+			this.visible=true;
 			game.world.add(this);
 
-			this.child=new Phaser.Sprite(game,x,y,key2);
+			this.child=new Phaser.Button(game,0,0,key2);
 			this.child.width=width2;
 			this.child.height=height2;
-			this.anchor.setTo(0.5,0.5);
+			this.child.anchor.setTo(0.5,0.5);
 			this.child.smoothed=true;
-			this.child.visible=false;
-			game.world.add(this.child);
+			this.child.visible=true;
+			this.addChild(this.child);
 		}
 
 		move(x,y){
-			let _x=this.position.x;
-			let _y=this.position.y;
-			let _distance=Phaser.Math.distance(_x,_y,x,y);
-			let _percent=Phaser.Math.percent(this.width1/2,_distance);
-			let _desX=_x+(x-_x)*_percent;
-			let _desY=_y+(y-_y)*_percent;
-			this.game.add.tween(this.child).to({x:_desX,y:_desY},0,Phaser.Easing.Linear.None,true,0,0);
+			let _x=this.worldPosition.x;
+			let _y=this.worldPosition.y;
+			let _ang=Phaser.Math.angleBetweenY(_x,_y,x,y);
+			let _desX=(this.child.width)*Math.sin(_ang);
+			let _desY=(this.child.width)*Math.cos(_ang);
+			this.child.position.x=_desX;
+			this.child.position.y=_desY;
 		}
 
 		tap(x,y){
-			this.alignIn(this.game.camera.view,Phaser.BOTTOM_LEFT);
-			this.child.alignIn(this.game.camera.view,Phaser.BOTTOM_LEFT);
-			// this.worldPosition.x=x;
-			// this.worldPosition.y=y;
-			// this.child.worldPosition.x=x;
-			// this.child.worldPosition.y=y;
+			this.fixedToCamera=false;
+			this.position.x=x;
+			this.position.y=y;
+			this.child.position.x=0;
+			this.child.position.y=0;
 			this.child.visible=true;
-			console.log(this)
+			this.fixedToCamera=true;
 		}
 
 		cancel(){
@@ -120,7 +121,7 @@
 
 	class MazeGame{
 		constructor(){
-			this.game=new Phaser.Game(375,620,Phaser.CANVAS,'container');
+			this.game=new Phaser.Game("100","100",Phaser.CANVAS,'container');
 			this.game.state.add('preload',this.preload);
 			this.game.state.add('create',this.create);
 			this.game.state.add('play',this.play);
@@ -152,6 +153,9 @@
 				this.game.load.image('2','./img/tree2.png');
 				this.game.load.image('3','./img/tree3.png');
 				this.game.load.image('4','./img/flower.png');
+
+				this.game.load.image('c1','./img/c1.png');
+				this.game.load.image('c2','./img/c2.png');
 
 				this.game.load.image('p1',data1.img);
 				this.game.load.image('p2',data2.img);
@@ -188,7 +192,7 @@
 				
 				var position={};
 				var touch=false;
-				controller=new Control(this.game,60,60,'1','2');
+				controller=new Control(this.game,60,60,'c1','c2');
 
 				this.game.camera.follow(player1);
 				this.game.input.maxPointers=1;
@@ -207,15 +211,21 @@
 				this.game.input.addMoveCallback(function(pointer,x,y,isTap){
 					this.game.debug.pointer(this.game.input.pointer1)
 					if(!isTap&&touch){
-						if(x>position.x){
-							player1.body.velocity.x=300;
-						}else{
-							player1.body.velocity.x=-300;
+						let _x=x-position.x;
+						let _y=y-position.y;
+						if(Math.abs(_x)>Math.abs(_y)){
+							if(x>position.x){
+								player1.body.velocity.x=300;
+							}else{
+								player1.body.velocity.x=-300;
+							}
 						}
-						if(y>position.y){
-							player1.body.velocity.y=300;
-						}else{
-							player1.body.velocity.y=-300;
+						else{
+							if(y>position.y){
+								player1.body.velocity.y=300;
+							}else{
+								player1.body.velocity.y=-300;
+							}
 						}
 						controller.move(x,y);
 					}
