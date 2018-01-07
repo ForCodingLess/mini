@@ -2,6 +2,7 @@
 var crypto = require('crypto');
 var https=require('https');
 var xmlreader=require("xmlreader");
+var fs=require('fs');
 var config=require("config");
 
 var mysql=require('./db.js');
@@ -49,6 +50,38 @@ mp.receiveText=function(req,res){
 			})
 		}
 	})
+}
+
+mp.downloadImg=function(req,res){
+	var openid=req.query.openid;
+	var url=decodeURIComponent(req.query.img);
+	https.get(url,(result)=>{
+		var imgData="";
+		result.setEncoding('binary');
+		
+		result.on('data',(d)=>{
+			imgData+=d;
+		})
+
+		result.on('end',()=>{
+			fs.writeFile('./public/avatar/'+openid+".png",imgData,'binary',(err)=>{
+				if(err){
+					console.log(err);
+					res.send({
+						success:false,
+						msg:"获取头像失败"
+					})
+				}else{
+					res.send({
+						success:true,
+						url:'./avatar/'+openid+".png",
+						msg:""
+					});
+				}
+			})
+		})
+	})
+
 }
 
 

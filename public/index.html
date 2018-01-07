@@ -4,12 +4,39 @@
 	<title>我好烦</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
 	<link rel="stylesheet" type="text/css" href="style/index.css"/>
+	<link rel="stylesheet" type="text/css" href="style/weUi.css"/>
 </head>
 <script type="text/javascript" src="./js/config.js"></script>
 <body>
-<div id="container">
+<div id="container" style="display: none;">
 
 </div>
+<div id="list">
+	
+</div>
+<div class="js_dialog" id="iosDialog1" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">游戏邀请</strong></div>
+        <div class="weui-dialog__bd">
+        	<div class="userlist">
+        		<div class="avatar" id="avatar">
+        		</div>
+        		<div class='nickname' id="nickname">
+				</div>
+			</div>
+			<div class="userlist">
+				邀请您一起加入游戏！
+			</div>
+        </div>
+        <div class="weui-dialog__ft">
+            <a href="javascript:$('#iosDialog1').css('display','none');" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a id="promise" href="javascript:$('#iosDialog1').css('display','none');" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="./js/zepto.min.js"></script>
+<script type="text/javascript" src="./js/zepto.cookie.min.js"></script>
 <script type="text/javascript" src="./js/phaser.min.js"></script>
 <!-- <script type="text/javascript" src="./js/main.js"></script>
 <script type="text/javascript" src="./js/bundle.js"></script> -->

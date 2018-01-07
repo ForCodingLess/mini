@@ -1,2 +1,60 @@
 body, html {
-  margin: 0px; }
+  margin: 0px; 
+  height: 100%;
+}
+.list{
+	background-color: #eee;
+}
+.userlist{
+	position: relative;
+	display: flex;
+	display: -webkit-flex;
+	justify-content: flex-start;
+	padding: 10px 15px;
+}
+.userlist:after{
+	content: " ";
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+	height: 1px;
+	-webkit-transform: scaleY(0.5);
+	background-color: #888;
+}
+.avatar{
+	width: 50px;
+	height: 50px;
+	background-size: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	-webkit-flex-basis: 50px;
+	-webkit-flex-shrink: 0;
+	-webkit-flex-grow: 0;
+}
+.nickname{
+	-webkit-flex-basis: 160px;
+	-webkit-flex-shrink: 1;
+	-webkit-flex-grow: 1;
+	line-height: 50px;
+	padding-left: 15px;
+}
+.invitebt{
+	-webkit-flex-basis: 90px;
+	-webkit-flex-shrink: 0;
+	-webkit-flex-grow: 0;
+	font-size: 18px;
+	padding-left: 15px;
+	width: 90px;
+	height: 50px;
+	line-height: 50px;
+}
+.invitebt button{
+	padding: 7px 12px;
+	font-size: 16px;
+}
+
+.js_dialog .userlist:after{
+	content: none;
+}
