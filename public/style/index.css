@@ -2,9 +2,6 @@ body, html {
   margin: 0px; 
   height: 100%;
 }
-.list{
-	background-color: #eee;
-}
 .userlist{
 	position: relative;
 	display: flex;

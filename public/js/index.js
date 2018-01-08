@@ -386,7 +386,7 @@ $(function () {
 				var _type = obj.code;
 				switch (_type) {
 					case 200:
-						$("#list").css("display", "none");
+						$("#mainlist").css("display", "none");
 						$("#container").css("display", "block");
 						maze = obj.maze;
 						data1 = obj.location;
@@ -399,7 +399,7 @@ $(function () {
 					case 520:
 						game.receive(obj.msg);
 						game = null;
-						$("#list").css("display", "block");
+						$("#mainlist").css("display", "block");
 						$("#container").css("display", "none");
 						break;
 					case -1:
