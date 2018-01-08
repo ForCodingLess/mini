@@ -21,10 +21,10 @@ function promise(dom){
 	},'promise');
 }
 
-(function(){
+// (function(){
 	class WSSocket{
 		constructor(obj){
-			this.handler=new WebSocket(config.WSS)
+			this.handler=new WebSocket(config.WSS);
 
 			this.id=obj.id;
 			this.openid=obj.openid;
@@ -37,7 +37,7 @@ function promise(dom){
 			}
 
 			this.handler.onclose=()=>{
-				this.handler=null
+				this.handler=null;
 			}
 
 			this.handler.onmessage=(res)=>{
@@ -265,9 +265,7 @@ function promise(dom){
 				this.game.physics.arcade.collide(player1,trees);
 				this.game.physics.arcade.overlap(player1,player2,function(){
 					clearInterval(timer);
-					handler.send({
-
-					})
+					handler.send(null,'over');
 					this.game.state.start('over',true,false);
 				},null,this);
 			}
@@ -275,7 +273,7 @@ function promise(dom){
 
 		over(){
 			this.create=()=>{
-				timer&&clearInterval(timer);
+				
 			}
 		}
 
@@ -283,13 +281,15 @@ function promise(dom){
 			this.game.add.tween(player2).to({x:x,y:y},50,Phaser.Easing.Linear.None,true,0,0);
 		}
 
-		receive(){
-        	timer&&clearInterval(timer);
-        	this.game.state.start('over');
+		receive(msg){
+			if(this.game.state.current!='over'){
+	        	clearInterval(timer);
+	        	this.game.state.start('over');
+	        }
+	        alert(msg);
+	        this.game.destroy();
 		}
 	}
-
-
 
 	$(function(){
 		let openid=$.fn.cookie('openid');
@@ -317,7 +317,8 @@ function promise(dom){
 				      		game.render(obj.operation.pos.x,obj.operation.pos.y);
 				      		break;
 			      		case 520:
-			      			game.receive();
+			      			game.receive(obj.msg);
+			      			game=null;
 			      			break;
 		      			case -1:
 		      				$(`#${obj.openid}`).remove();
@@ -385,7 +386,7 @@ function promise(dom){
 			window.location.href=config.IFRAME;
 		}
 	})
-})()
+// })()
 
 
 
