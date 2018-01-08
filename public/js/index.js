@@ -31,8 +31,6 @@ function promise(dom) {
 	}, 'promise');
 }
 
-// (function(){
-
 var WSSocket = function () {
 	function WSSocket(obj) {
 		var _this = this;
@@ -124,8 +122,8 @@ var Player = function (_Phaser$Sprite2) {
 	_inherits(Player, _Phaser$Sprite2);
 
 	function Player(game, x, y, key) {
-		var width = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 25;
-		var height = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 25;
+		var width = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 30;
+		var height = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 30;
 
 		_classCallCheck(this, Player);
 
@@ -134,7 +132,7 @@ var Player = function (_Phaser$Sprite2) {
 		_this3.width = width;
 		_this3.height = height;
 		game.physics.arcade.enable(_this3);
-		_this3.smoothed = true;
+		_this3.smoothed = false;
 		_this3.body.collideWorldBounds = true;
 		game.world.add(_this3);
 		return _this3;
@@ -287,8 +285,8 @@ var MazeGame = function () {
 					}
 				}
 
-				player1 = new Player(_this7.game, data1.x * 40 + 7, data1.y * 40 + 7, 'p1');
-				player2 = new Player(_this7.game, data2.x * 40 + 7, data2.y * 40 + 7, 'p2');
+				player1 = new Player(_this7.game, data1.x * 40 + 5, data1.y * 40 + 5, 'p1');
+				player2 = new Player(_this7.game, data2.x * 40 + 5, data2.y * 40 + 5, 'p2');
 
 				var position = {};
 				var touch = false;
@@ -341,7 +339,7 @@ var MazeGame = function () {
 				_this7.game.physics.arcade.collide(player1, trees);
 				_this7.game.physics.arcade.overlap(player1, player2, function () {
 					clearInterval(timer);
-					handler.send({});
+					handler.send(null, 'over');
 					this.game.state.start('over', true, false);
 				}, null, _this7);
 			};
@@ -359,10 +357,14 @@ var MazeGame = function () {
 	}, {
 		key: 'receive',
 		value: function receive() {
+			var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
 			if (this.game.state.current != 'over') {
 				clearInterval(timer);
 				this.game.state.start('over');
 			}
+			alert(msg);
+			this.game.destroy();
 		}
 	}]);
 
@@ -374,7 +376,7 @@ $(function () {
 	var headimg = $.fn.cookie('headimg');
 	var nickname = decodeURIComponent($.fn.cookie('name'));
 	if (!!openid && !!headimg && !!nickname) {
-		openid += ~~(Math.random() * 10000);
+		// openid+=~~(Math.random()*10000);
 		handler = new WSSocket({
 			openid: openid,
 			headimg: headimg,
@@ -395,7 +397,10 @@ $(function () {
 						game.render(obj.operation.pos.x, obj.operation.pos.y);
 						break;
 					case 520:
-						game.receive();
+						game.receive(obj.msg);
+						game = null;
+						$("#list").css("display", "block");
+						$("#container").css("display", "none");
 						break;
 					case -1:
 						$('#' + obj.openid).remove();
@@ -410,11 +415,11 @@ $(function () {
 							for (var _iterator = obj.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 								var user = _step.value;
 
-								str += '<div class=\'userlist\' id=\'' + user.openid + '\'>\n      \t\t\t\t\t\t\t\t\t<div class=\'avatar\' style=\'background-image:url("' + user.headimg + '")\'>\n      \t\t\t\t\t\t\t\t\t</div>\n      \t\t\t\t\t\t\t\t\t<div class=\'nickname\'>\n      \t\t\t\t\t\t\t\t\t\t' + user.nickname + '\n      \t\t\t\t\t\t\t\t\t</div>';
+								str += '<div class=\'userlist\' id=\'' + user.openid + '\'>\n  \t\t\t\t\t\t\t\t\t<div class=\'avatar\' style=\'background-image:url("' + user.headimg + '")\'>\n  \t\t\t\t\t\t\t\t\t</div>\n  \t\t\t\t\t\t\t\t\t<div class=\'nickname\'>\n  \t\t\t\t\t\t\t\t\t\t' + user.nickname + '\n  \t\t\t\t\t\t\t\t\t</div>';
 								if (user.status === 1) {
-									str += '<div class=\'invitebt\'>\n\t\t\t\t\t\t\t\t\t\t\t<a class=\'weui-btn weui-btn_mini weui-btn_primary\' href=\'javascript:invite("' + user.openid + '");\'>\u9080\u8BF7</a>\n      \t\t\t\t\t\t\t\t\t\t</div>';
+									str += '<div class=\'invitebt\'>\n\t\t\t\t\t\t\t\t\t\t<a class=\'weui-btn weui-btn_mini weui-btn_primary\' href=\'javascript:invite("' + user.openid + '");\'>\u9080\u8BF7</a>\n  \t\t\t\t\t\t\t\t\t\t</div>';
 								} else {
-									str += '<div class=\'invitebt\'>\n      \t\t\t\t\t\t\t\t\t\t</div>';
+									str += '<div class=\'invitebt\'>\n\t\t\t\t\t\t\t\t\t\t\t\u6E38\u620F\u4E2D\n  \t\t\t\t\t\t\t\t\t\t</div>';
 								}
 							}
 						} catch (err) {
@@ -435,12 +440,10 @@ $(function () {
 						$("#list").append(str);
 						break;
 					case 201:
-						var openid = obj.openid;
-						$(openid + ' .invitebt').html("");
+						$('#' + obj.openid + ' .invitebt').html("游戏中");
 						break;
 					case 202:
-						var openid = obj.openid;
-						$(openid + ' .invitebt').html('<a class=\'weui-btn weui-btn_mini weui-btn_primary\' href=\'javascript:invite("' + openid + '");\'>\u9080\u8BF7</a>');
+						$('#' + obj.openid + ' .invitebt').html('<a class=\'weui-btn weui-btn_mini weui-btn_primary\' href=\'javascript:invite("' + obj.openid + '");\'>\u9080\u8BF7</a>');
 						break;
 					case 403:
 						alert(obj.msg);
@@ -477,4 +480,3 @@ $(function () {
 		window.location.href = config.IFRAME;
 	}
 });
-// })()
