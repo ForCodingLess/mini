@@ -4,10 +4,10 @@ var ExtractTextPlugin=require('extract-text-webpack-plugin');
 var extractCss=new ExtractTextPlugin('style/[name].css');
 
 module.exports={
-	entry:{bundle:'./public/js/game.js'},
+	entry:{index:'./dev/js/index.js'},
 	output:{
-		path:path.resolve(__dirname,"public/"),
-		publicPath:"public/",
+		path:path.resolve(__dirname,"bulid/"),
+		publicPath:"bulid/",
 		filename:"js/[name].js"
 	},
 	module:{
