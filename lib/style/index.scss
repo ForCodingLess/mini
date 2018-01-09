@@ -1,3 +1,54 @@
+@import '../../public/style/weUi.css';
+
 body,html{
 	margin:0px;
+	height: 100%;
+}
+
+.user{
+	position: relative;
+	display: -webkit-flex;
+	justify-content: flex-start;
+	padding: 10px 15px;
+	&:after{
+		content: " ";
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		width: 100%;
+		height: 1px;
+		-webkit-transform: scaleY(0.5);
+		background-color: #888;
+	}
+	& .avatar{
+		width: 50px;
+		height: 50px;
+		background-size: 100%;
+		background-position: center;
+		background-repeat: no-repeat;
+		-webkit-flex-basis: 50px;
+		-webkit-flex-shrink: 0;
+		-webkit-flex-grow: 0;
+	}
+	& .nickname{
+		-webkit-flex-basis: 160px;
+		-webkit-flex-shrink: 1;
+		-webkit-flex-grow: 1;
+		line-height: 50px;
+		padding-left: 15px;
+	}
+	& .invitebt{
+		-webkit-flex-basis: 90px;
+		-webkit-flex-shrink: 0;
+		-webkit-flex-grow: 0;
+		font-size: 18px;
+		padding-left: 15px;
+		width: 90px;
+		margin: auto 0;
+		& a{
+			display: block;
+			width: 62px;
+		}
+	}
 }

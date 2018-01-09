@@ -336,11 +336,11 @@ $(function(){
 							if(user.status===1){
 								str+=`<div class='invitebt'>
 										<a class='weui-btn weui-btn_mini weui-btn_primary' href='javascript:invite("${user.openid}");'>邀请</a>
-  										</div>`;
+  										</div></div>`;
 							}else{
 								str+=`<div class='invitebt'>
 											游戏中
-  										</div>`;
+  										</div></div>`;
 							}
       					}
   						$("#list").append(str);
