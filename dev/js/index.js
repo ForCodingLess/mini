@@ -1,6 +1,9 @@
 import '../style/index.scss';
 import outControl from '../../public/img/c1.png';
 import innerControl from '../../public/img/c2.png';
+import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
+import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
+import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
 
 class Control extends Phaser.Button{
 	constructor(game,x,y,key1,key2,width1=60,height1=60,width2=80,height2=80){
