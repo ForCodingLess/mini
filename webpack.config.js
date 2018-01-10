@@ -33,6 +33,16 @@ module.exports={
 			{
 				test:/\.scss$/,
 				loader:extractCss.extract(['css-loader','sass-loader'])
+			},
+			{
+				test:/\.(png|jpg|gif|woff|woff2|ttf|eot|svg|swf)$/,
+				use:[{
+					loader:'file-loader',
+					options:{
+						name:'img/[name].[ext]',
+						publicPath: './'
+					}
+				}]
 			}
 		]
 	},
